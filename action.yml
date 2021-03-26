@@ -19,6 +19,15 @@ inputs:
   target_branch:
     description: 'The target branch name the sources get pushed to'
     required: false
+  target_repo:
+    description: 'The target repository the sources get pushed to'
+    required: false
+  target_repo_committer:
+    description: 'A user who pushes the sources to the target repository'
+    required: false
+  target_repo_committer_token:
+    description: 'A token of the user who pushes the sources to the target repository'
+    required: false
   build_only:
     description: 'Will build the Jekyll site without publishing it'
     required: false

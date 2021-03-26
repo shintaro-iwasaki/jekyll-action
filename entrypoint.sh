@@ -145,12 +145,23 @@ rm -rf *.yml
 
 echo "Publishing to ${GITHUB_REPOSITORY} on branch ${remote_branch}"
 
-git config user.name "${GITHUB_ACTOR}" && \
-git config user.email "${GITHUB_ACTOR}@users.noreply.github.com" && \
-git add . && \
-git commit $COMMIT_OPTIONS -m "jekyll build from Action ${GITHUB_SHA}" && \
-git push $PUSH_OPTIONS $REMOTE_REPO $LOCAL_BRANCH:$remote_branch && \
-rm -fr .git && \
-cd .. 
+git config user.name "${GITHUB_ACTOR}"
+git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
+if [ x"${INPUT_TARGET_REPO}" = x ]; then
+  git add . && \
+  git commit $COMMIT_OPTIONS -m "jekyll build from Action ${GITHUB_SHA}" && \
+  git push $PUSH_OPTIONS $REMOTE_REPO $LOCAL_BRANCH:$remote_branch && \
+  rm -fr .git
+else
+  TARGET_REPO="https://${INPUT_TARGET_REPO_COMMITTER}:${INPUT_TARGET_REPO_COMMITTER_TOKEN}@github.com/${INPUT_TARGET_REPO}.git"
+  git remote add target $TARGET_REPO
+  git fetch target
+  git add . && \
+  git commit $COMMIT_OPTIONS -m "jekyll build from Action ${GITHUB_SHA}" && \
+  git push $PUSH_OPTIONS $TARGET_REPO $LOCAL_BRANCH:$remote_branch && \
+  rm -fr .git
+fi
+
+cd ..
 
 exit $?
