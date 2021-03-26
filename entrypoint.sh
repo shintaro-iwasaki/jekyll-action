@@ -126,11 +126,6 @@ if [ "${INPUT_BUILD_ONLY}" = true ]; then
   exit $?
 fi
 
-if [ "${GITHUB_REF}" = "refs/heads/${remote_branch}" ]; then
-  echo "::error::Cannot publish on branch ${remote_branch}"
-  exit 1
-fi
-
 cd ${BUILD_DIR}
 
 # No need to have GitHub Pages to run Jekyll
@@ -148,6 +143,10 @@ echo "Publishing to ${GITHUB_REPOSITORY} on branch ${remote_branch}"
 git config user.name "${GITHUB_ACTOR}"
 git config user.email "${GITHUB_ACTOR}@users.noreply.github.com"
 if [ x"${INPUT_TARGET_REPO}" = x ]; then
+  if [ "${GITHUB_REF}" = "refs/heads/${remote_branch}" ]; then
+    echo "::error::Cannot publish on branch ${remote_branch}"
+    exit 1
+  fi
   git add . && \
   git commit $COMMIT_OPTIONS -m "jekyll build from Action ${GITHUB_SHA}" && \
   git push $PUSH_OPTIONS $REMOTE_REPO $LOCAL_BRANCH:$remote_branch && \
