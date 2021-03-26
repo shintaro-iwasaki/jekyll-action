@@ -136,6 +136,13 @@ cd ${BUILD_DIR}
 # No need to have GitHub Pages to run Jekyll
 touch .nojekyll
 
+echo "Removing unnecessary files"
+rm -rf *.md
+rm -rf Gemfile
+rm -rf Gemfile.lock
+rm -rf *.gemspec
+rm -rf *.yml
+
 echo "Publishing to ${GITHUB_REPOSITORY} on branch ${remote_branch}"
 
 git config user.name "${GITHUB_ACTOR}" && \
